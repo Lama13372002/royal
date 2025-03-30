@@ -110,3 +110,22 @@ model SiteSettings {
   whatsappLink  String  @default("#")
   updatedAt    DateTime @updatedAt
 }
+
+model Benefit {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String    @db.Text
+  icon        String
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model BenefitStats {
+  id           Int      @id @default(1)
+  clients      String   @default("5000+")
+  directions   String   @default("15+")
+  experience   String   @default("10+")
+  support      String   @default("24/7")
+  updatedAt    DateTime @updatedAt
+}
