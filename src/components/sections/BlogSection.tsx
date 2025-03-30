@@ -56,6 +56,9 @@ export default function BlogSection() {
     return null
   }
 
+  // Заглушка для отсутствующего изображения
+  const defaultImage = '/images/default-blog.jpg'
+
   return (
     <section id="blog" className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="container mx-auto px-4">
@@ -85,7 +88,7 @@ export default function BlogSection() {
                   <div
                     className="h-52 bg-cover bg-center"
                     style={{
-                      backgroundImage: `url(${post.imageUrl || 'https://images.unsplash.com/photo-1508964942454-1a56651d54ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2832&q=80'})`
+                      backgroundImage: `url(${post.imageUrl || defaultImage})`
                     }}
                   >
                     <div className="w-full h-full flex items-end blog-overlay">
