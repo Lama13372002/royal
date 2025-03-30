@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -33,10 +33,9 @@ export default function BlogPostForm({ post, onSubmitSuccess, onCancel }: BlogPo
     title: post?.title || '',
     content: post?.content || '',
     excerpt: post?.excerpt || '',
+    imageUrl: post?.imageUrl || '',
     isPublished: post?.isPublished || false
   })
-  const [imagePreview, setImagePreview] = useState<string | null>(post?.imageUrl || null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -47,24 +46,6 @@ export default function BlogPostForm({ post, onSubmitSuccess, onCancel }: BlogPo
 
   const handleCheckboxChange = (checked: boolean) => {
     setFormData(prev => ({ ...prev, isPublished: checked }))
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // Проверка типа файла
-    if (!file.type.startsWith('image/')) {
-      toast.error('Пожалуйста, загрузите изображение')
-      return
-    }
-
-    // Создаем предварительный просмотр
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      setImagePreview(event.target?.result as string)
-    }
-    reader.readAsDataURL(file)
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -96,10 +77,10 @@ export default function BlogPostForm({ post, onSubmitSuccess, onCancel }: BlogPo
       formDataObj.append('content', formData.content)
       formDataObj.append('excerpt', formData.excerpt)
       formDataObj.append('isPublished', formData.isPublished.toString())
-
-      // Добавляем файл изображения, если он выбран
-      if (fileInputRef.current?.files?.[0]) {
-        formDataObj.append('image', fileInputRef.current.files[0])
+      
+      // Добавляем URL изображения, если он указан
+      if (formData.imageUrl) {
+        formDataObj.append('imageUrl', formData.imageUrl)
       }
 
       // Отправляем запрос на сервер
@@ -183,28 +164,28 @@ export default function BlogPostForm({ post, onSubmitSuccess, onCancel }: BlogPo
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Изображение для статьи
+            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+              URL изображения для статьи
             </label>
             <Input
-              id="image"
-              name="image"
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              accept="image/*"
+              id="imageUrl"
+              name="imageUrl"
+              type="url"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              placeholder="Введите URL изображения (например, https://example.com/image.jpg)"
               className="w-full"
             />
             <p className="mt-1 text-sm text-gray-500">
               Рекомендуемый размер: 1200x630px
             </p>
 
-            {imagePreview && (
+            {formData.imageUrl && (
               <div className="mt-2">
                 <div className="relative w-full h-48 bg-gray-100 rounded-md overflow-hidden">
                   <div
                     className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${imagePreview})` }}
+                    style={{ backgroundImage: `url(${formData.imageUrl})` }}
                   />
                 </div>
               </div>
