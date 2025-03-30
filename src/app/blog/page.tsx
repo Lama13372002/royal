@@ -24,6 +24,7 @@ function BlogPost({ post }: { post: BlogPost }) {
   const [isOpen, setIsOpen] = useState(false)
   const publishedDate = post.publishedAt ? new Date(post.publishedAt) : new Date(post.createdAt)
   const readTime = Math.max(1, Math.ceil(post.content.length / 1000)) + ' мин'
+  const defaultImage = '/images/default-blog.jpg'
 
   return (
     <div className="flex flex-col h-full">
@@ -37,7 +38,7 @@ function BlogPost({ post }: { post: BlogPost }) {
         <div
           className="h-60 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${post.imageUrl || 'https://images.unsplash.com/photo-1508964942454-1a56651d54ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2832&q=80'})`
+            backgroundImage: `url(${post.imageUrl || defaultImage})`
           }}
         >
           <div className="w-full h-full flex items-end blog-overlay">
@@ -70,7 +71,7 @@ function BlogPost({ post }: { post: BlogPost }) {
             <div
               className="h-60 w-full bg-cover bg-center relative"
               style={{
-                backgroundImage: `url(${post.imageUrl || 'https://images.unsplash.com/photo-1508964942454-1a56651d54ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2832&q=80'})`
+                backgroundImage: `url(${post.imageUrl || defaultImage})`
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20 flex flex-col justify-end p-6">
