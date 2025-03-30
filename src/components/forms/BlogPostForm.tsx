@@ -131,7 +131,7 @@ export default function BlogPostForm({ post, onSubmitSuccess, onCancel }: BlogPo
         <CardTitle>{post ? 'Редактирование статьи' : 'Создание новой статьи'}</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 overflow-visible">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
               Заголовок статьи *
