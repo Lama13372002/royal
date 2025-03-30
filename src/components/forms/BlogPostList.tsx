@@ -223,7 +223,7 @@ export default function BlogPostList() {
       )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="sm:max-w-3xl p-0">
+        <DialogContent className="sm:max-w-3xl p-0 max-h-screen overflow-auto">
           <BlogPostForm
             post={currentPost}
             onSubmitSuccess={() => {
