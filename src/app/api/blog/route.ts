@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import fs from 'fs'
-import path from 'path'
-import { writeFile } from 'fs/promises'
 
 const prisma = new PrismaClient()
 
@@ -31,6 +28,7 @@ export async function POST(request: Request) {
     const content = formData.get('content') as string
     const excerpt = formData.get('excerpt') as string
     const isPublished = formData.get('isPublished') === 'true'
+    const imageUrl = formData.get('imageUrl') as string || null
 
     // Генерируем slug из заголовка
     const slug = title
@@ -47,26 +45,6 @@ export async function POST(request: Request) {
         return translitMap[c.toLowerCase()] || c
       })
       .slice(0, 50)
-
-    let imageUrl = null
-    const imageFile = formData.get('image') as File
-
-    if (imageFile && imageFile.name) {
-      const imageBuffer = Buffer.from(await imageFile.arrayBuffer())
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'blog')
-
-      // Убедимся, что директория существует
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true })
-      }
-
-      const fileExtension = imageFile.name.split('.').pop() || 'jpg'
-      const fileName = `${slug}-${Date.now()}.${fileExtension}`
-      const filePath = path.join(uploadsDir, fileName)
-
-      await writeFile(filePath, imageBuffer)
-      imageUrl = `/uploads/blog/${fileName}`
-    }
 
     const publishedAt = isPublished ? new Date() : null
 
@@ -99,6 +77,7 @@ export async function PUT(request: Request) {
     const content = formData.get('content') as string
     const excerpt = formData.get('excerpt') as string
     const isPublished = formData.get('isPublished') === 'true'
+    const imageUrl = formData.get('imageUrl') as string || null
 
     // Получаем текущую статью
     const existingPost = await prisma.blogPost.findUnique({
@@ -107,34 +86,6 @@ export async function PUT(request: Request) {
 
     if (!existingPost) {
       return NextResponse.json({ error: 'Статья не найдена' }, { status: 404 })
-    }
-
-    let imageUrl = existingPost.imageUrl
-    const imageFile = formData.get('image') as File
-
-    if (imageFile && imageFile.name !== 'undefined') {
-      const imageBuffer = Buffer.from(await imageFile.arrayBuffer())
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'blog')
-
-      // Убедимся, что директория существует
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true })
-      }
-
-      const fileExtension = imageFile.name.split('.').pop() || 'jpg'
-      const fileName = `${existingPost.slug}-${Date.now()}.${fileExtension}`
-      const filePath = path.join(uploadsDir, fileName)
-
-      await writeFile(filePath, imageBuffer)
-      imageUrl = `/uploads/blog/${fileName}`
-
-      // Удаляем старое изображение, если оно существует
-      if (existingPost.imageUrl) {
-        const oldImagePath = path.join(process.cwd(), 'public', existingPost.imageUrl)
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath)
-        }
-      }
     }
 
     // Обновляем publishedAt если статья публикуется впервые
@@ -172,7 +123,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Необходимо указать ID статьи' }, { status: 400 })
     }
 
-    // Получаем статью перед удалением, чтобы удалить изображение
+    // Получаем статью перед удалением
     const blogPost = await prisma.blogPost.findUnique({
       where: { id }
     })
@@ -185,14 +136,6 @@ export async function DELETE(request: Request) {
     await prisma.blogPost.delete({
       where: { id }
     })
-
-    // Удаляем изображение, если оно существует
-    if (blogPost.imageUrl) {
-      const imagePath = path.join(process.cwd(), 'public', blogPost.imageUrl)
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath)
-      }
-    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
