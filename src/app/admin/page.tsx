@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import BlogPostList from '@/components/forms/BlogPostList'
-import { LayoutGrid, FileText, Phone, Mail, Share2 } from 'lucide-react'
+import BenefitsList from '@/components/forms/BenefitsList'
+import { LayoutGrid, FileText, Phone, Mail, Share2, Award } from 'lucide-react'
 
 export default function AdminPage() {
   const { settings, updateSettings, loading, error } = useSettings()
@@ -88,7 +89,7 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="contact" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="contact" className="flex items-center">
               <Phone className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Контактная информация</span>
@@ -108,6 +109,11 @@ export default function AdminPage() {
               <FileText className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Управление блогом</span>
               <span className="sm:hidden">Блог</span>
+            </TabsTrigger>
+            <TabsTrigger value="benefits" className="flex items-center">
+              <Award className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Блок преимуществ</span>
+              <span className="sm:hidden">Преимущества</span>
             </TabsTrigger>
             <TabsTrigger value="footer" className="flex items-center">
               <Mail className="h-4 w-4 mr-2" />
@@ -309,6 +315,10 @@ export default function AdminPage() {
 
           <TabsContent value="blog">
             <BlogPostList />
+          </TabsContent>
+
+          <TabsContent value="benefits">
+            <BenefitsList />
           </TabsContent>
 
           <TabsContent value="footer">
