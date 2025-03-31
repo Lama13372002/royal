@@ -56,7 +56,7 @@ const formSchema = z.object({
   phone: z.string().min(10, {
     message: 'Укажите корректный номер телефона',
   }),
-  vehicleClass: z.enum(['standard', 'comfort', 'business', 'premium', 'minivan'], {
+  vehicleClass: z.enum(['standard', 'comfort', 'business', 'vip', 'minivan'], {
     required_error: 'Выберите класс автомобиля',
   }),
   date: z.date({
