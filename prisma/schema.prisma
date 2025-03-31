@@ -13,8 +13,10 @@ model Route {
   destinationCity String
   distance        Float
   estimatedTime   String
+  priceStandard   Float       @default(0)
   priceComfort    Float
   priceBusiness   Float
+  priceVip        Float       @default(0)
   priceMinivan    Float
   description     String?     @db.Text
   popularityRating Int         @default(1)
